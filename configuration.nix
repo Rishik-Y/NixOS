@@ -126,7 +126,8 @@ blueman
 brightnessctl
 clamav
 clamtk
-clipse
+#clipse
+cliphist
 emote
 fastfetch
 flatpak
