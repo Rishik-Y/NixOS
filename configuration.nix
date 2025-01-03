@@ -126,11 +126,12 @@ blueman
 brightnessctl
 clamav
 clamtk
-#clipse
-cliphist
+clipse
+#cliphist
 emote
 fastfetch
 flatpak
+ghostty
 git
 gparted
 grim
