@@ -141,6 +141,7 @@ kdePackages.dolphin
 kitty
 latest.firefox-nightly-bin
 libnotify
+linux-wifi-hotspot
 mcontrolcenter
 mpv
 nautilus
