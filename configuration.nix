@@ -65,6 +65,9 @@ in
   # Enable the OpenSSH daemon.
     openssh = {
       enable = true;
+      settings = {
+        PasswordAuthentication = true;
+      };
     };
   # Enable touchpad support (enabled default in most desktopManager).
     libinput.enable = true;
