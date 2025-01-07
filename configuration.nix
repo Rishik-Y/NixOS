@@ -63,7 +63,9 @@ in
       pulse.enable = true;
     };
   # Enable the OpenSSH daemon.
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+    };
   # Enable touchpad support (enabled default in most desktopManager).
     libinput.enable = true;
   # Enable Flatpak
