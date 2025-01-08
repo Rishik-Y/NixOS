@@ -159,6 +159,7 @@ protonvpn-gui
 ranger
 slurp
 swaynotificationcenter
+swappy
 telegram-desktop
 #termius
 thefuck
