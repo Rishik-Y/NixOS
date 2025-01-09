@@ -138,6 +138,7 @@ fastfetch
 flatpak
 ghostty
 git
+gitkraken
 gparted
 grim
 home-manager
