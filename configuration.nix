@@ -139,6 +139,7 @@ flatpak
 ghostty
 git
 gitkraken
+go
 gparted
 grim
 home-manager
