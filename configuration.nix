@@ -76,7 +76,6 @@ in
   };
 
 fileSystems = {
-  "/".options = [ "compress=zstd"];
   "/home".options = [ "compress=zstd" "noatime" "autodefrag"];
 }; 
 

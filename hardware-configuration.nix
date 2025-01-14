@@ -8,30 +8,40 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" ];
+  boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/a39b159a-bdf1-48f6-81da-852ffe58b818";
+    { device = "/dev/disk/by-uuid/ccc5ed70-df3d-4d57-a761-79ff7cefe4b5";
+      fsType = "ext4";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/66D6-6E0D";
+      fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
+    };
+
+  fileSystems."/var" =
+    { device = "/dev/disk/by-uuid/163bb92b-18fe-4cf6-bf8a-14851961d5ef";
+      fsType = "ext4";
+    };
+
+  fileSystems."/tmp" =
+    { device = "/dev/disk/by-uuid/db19005a-a74a-42e1-8fc9-827f59ff1d8d";
+      fsType = "btrfs";
+    };
+
+  fileSystems."/nix" =
+    { device = "/dev/disk/by-uuid/14bfd49a-4635-4733-bf25-33222273aa9b";
       fsType = "btrfs";
     };
 
   fileSystems."/home" =
     { device = "/dev/disk/by-uuid/06e8130c-9c10-448e-9482-7f62643cf21a";
       fsType = "btrfs";
-    };
-
-  fileSystems."/media/Arch-home" =
-    { device = "/dev/disk/by-uuid/6f4aa860-6dfe-4fb6-9d62-729f4ce7ec95";
-      fsType = "btrfs";
-    };
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/F48B-17C0";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices = [ ];
@@ -42,6 +52,7 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp7s0f3u1.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp5s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
