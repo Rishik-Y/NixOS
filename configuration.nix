@@ -161,7 +161,7 @@ ntfs3g
 onedriver
 playerctl
 protonvpn-gui
-ranger
+#ranger
 slurp
 swaynotificationcenter
 swappy
