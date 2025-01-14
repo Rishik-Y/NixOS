@@ -70,7 +70,8 @@ in
       };
     };
     gvfs.enable = true;
-    udisks2.enable = true; 
+    udisks2.enable = true;
+    usbmuxd.enable = true;
   # Enable touchpad support (enabled default in most desktopManager).
     libinput.enable = true;
   # Enable Flatpak
