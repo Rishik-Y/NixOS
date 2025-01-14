@@ -146,6 +146,7 @@ hypridle
 kdePackages.dolphin
 kitty
 latest.firefox-nightly-bin
+libimobiledevice
 libnotify
 linux-wifi-hotspot
 mcontrolcenter
