@@ -172,6 +172,7 @@ waybar
 wluma
 wl-clipboard
 wofi
+yazi
 xfce.thunar
   ];
 
