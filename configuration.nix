@@ -69,6 +69,8 @@ in
         PasswordAuthentication = true;
       };
     };
+    gvfs.enable = true;
+    udisks2.enable = true; 
   # Enable touchpad support (enabled default in most desktopManager).
     libinput.enable = true;
   # Enable Flatpak
