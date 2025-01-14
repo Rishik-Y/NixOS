@@ -146,6 +146,7 @@ gparted
 grim
 home-manager
 hypridle
+ifuse
 kdePackages.dolphin
 kitty
 latest.firefox-nightly-bin
