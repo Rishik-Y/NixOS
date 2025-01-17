@@ -165,6 +165,7 @@ onedriver
 playerctl
 protonvpn-gui
 #ranger
+rquickshare
 slurp
 swaynotificationcenter
 swappy
