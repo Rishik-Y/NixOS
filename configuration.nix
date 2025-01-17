@@ -128,8 +128,10 @@ fileSystems = {
   #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #   wget
 
+android-tools
 ani-cli
 blueman
+bottles
 brightnessctl
 clamav
 clamtk
