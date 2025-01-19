@@ -99,13 +99,6 @@ fileSystems = {
     adb.enable = true;
   };
 
-  environment.sessionVariables = {
-  #If your cursor become invisible
-  # WLR_NO_HARDWARE_CURSORS = "1";
-  # Hint electron apps to use wayland
-  # NIXOS_OZONE_WL = "1";
-  };
-
   hardware = {
   #Opengl
   graphics.enable = true;
@@ -127,7 +120,19 @@ fileSystems = {
  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+  environment = {
+  variables = {
+  EDITOR = "nvim";
+  VISUAL = "nvim";
+  };
+sessionVariables = {
+  #If your cursor become invisible
+  # WLR_NO_HARDWARE_CURSORS = "1";
+  # Hint electron apps to use wayland
+  # NIXOS_OZONE_WL = "1";
+  };
+
+    systemPackages = with pkgs; [
   #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #   wget
 
@@ -183,6 +188,8 @@ wofi
 yazi
 xfce.thunar
   ];
+
+  };
 
 nixpkgs.config.allowUnfree = true;
 
