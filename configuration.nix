@@ -132,9 +132,9 @@ fileSystems = {
   # $ nix search wget
   environment = {
   variables = {
-  EDITOR = "neovim";
-  SYSTEMD_EDITOR = "neovim";
-  VISUAL = "neovim";
+  EDITOR = "nvim";
+  SYSTEMD_EDITOR = "nvim";
+  VISUAL = "nvim";
   };
 sessionVariables = {
   #If your cursor become invisible
@@ -177,6 +177,7 @@ linux-wifi-hotspot
 mcontrolcenter
 mpv
 nautilus
+ncdu
 networkmanagerapplet
 ntfs3g
 onedriver
