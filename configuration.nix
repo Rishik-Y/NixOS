@@ -90,6 +90,14 @@ fileSystems = {
     ];
   };
 
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+
   #Enabling hyprland on NixOS
   programs = {
     hyprland = {
@@ -97,7 +105,16 @@ fileSystems = {
       xwayland.enable = true;
     };
     adb.enable = true;
+    neovim.enable = true;
+    neovim.defaultEditor = true;
   };
+
+  # programs.firefox.enable = true;
+  nixpkgs.overlays = [
+  (
+  import /home/Kihsir/Git_Clone/nixpkgs-mozilla/firefox-overlay.nix
+  )
+  ]; 
 
   hardware = {
   #Opengl
@@ -110,13 +127,6 @@ fileSystems = {
   #Most wayland compositor need this
   # nvidia.modesetting.enable = true;
   };
-
-  # programs.firefox.enable = true;
-  nixpkgs.overlays = [
-  (
-  import /home/Kihsir/Git_Clone/nixpkgs-mozilla/firefox-overlay.nix
-  )
-  ]; 
  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -167,7 +177,6 @@ linux-wifi-hotspot
 mcontrolcenter
 mpv
 nautilus
-neovim
 networkmanagerapplet
 ntfs3g
 onedriver
@@ -200,15 +209,6 @@ nixpkgs.config.allowUnfree = true;
     # Additional home-manager config can be added here, e.g.:
     # home.packages = [ pkgs.foo ];
   };
-
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
 
   # List services that you want to enable:
 
