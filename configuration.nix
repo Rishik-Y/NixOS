@@ -122,8 +122,9 @@ fileSystems = {
   # $ nix search wget
   environment = {
   variables = {
-  EDITOR = "nvim";
-  VISUAL = "nvim";
+  EDITOR = "neovim";
+  SYSTEMD_EDITOR = "neovim";
+  VISUAL = "neovim";
   };
 sessionVariables = {
   #If your cursor become invisible
