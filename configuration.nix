@@ -91,9 +91,12 @@ fileSystems = {
   };
 
   #Enabling hyprland on NixOS
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
+  programs = {
+    hyprland = {
+      enable = true;
+      xwayland.enable = true;
+    };
+    adb.enable = true;
   };
 
   environment.sessionVariables = {
