@@ -182,6 +182,7 @@ networkmanagerapplet
 ntfs3g
 onedriver
 playerctl
+postgresql
 protonvpn-gui
 #ranger
 rquickshare
