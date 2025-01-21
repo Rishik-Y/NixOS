@@ -181,6 +181,8 @@ ncdu
 networkmanagerapplet
 ntfs3g
 onedriver
+#pgadmin4
+pgadmin4-desktopmode
 playerctl
 postgresql
 protonvpn-gui
