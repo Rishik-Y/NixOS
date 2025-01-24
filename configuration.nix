@@ -104,6 +104,7 @@ fileSystems = {
       enable = true;
       xwayland.enable = true;
     };
+    nix-ld.enable = true;
     adb.enable = true;
     neovim.enable = true;
     neovim.defaultEditor = true;
