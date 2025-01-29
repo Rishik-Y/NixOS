@@ -89,6 +89,12 @@ fileSystems = {
     packages = with pkgs; [
     ];
   };
+  users.users.kihsir = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    packages = with pkgs; [
+    ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -254,6 +260,7 @@ clamav
 clamtk
 clipse
 #cliphist
+dia
 emote
 fastfetch
 flatpak
@@ -263,7 +270,7 @@ gitkraken
 go
 gparted
 grim
-home-manager
+#home-manager
 hypridle
 ifuse
 #kdePackages.dolphin
@@ -290,7 +297,7 @@ slurp
 swaynotificationcenter
 swappy
 telegram-desktop
-#termius
+termius
 thefuck
 tlp
 waybar
