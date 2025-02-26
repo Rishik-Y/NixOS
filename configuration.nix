@@ -69,6 +69,7 @@ in
         PasswordAuthentication = true;
       };
     };
+    tlp.enable = true;
     gvfs.enable = true;
     udisks2.enable = true;
     usbmuxd.enable = true;
@@ -110,6 +111,16 @@ fileSystems = {
       enable = true;
       xwayland.enable = true;
     };
+    bash = {
+      interactiveShellInit = ''
+        if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+        then
+          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+        fi
+      '';
+    };
+    fish.enable = true;
     nix-ld = {
     enable = true;
     libraries = with pkgs; [
@@ -179,7 +190,6 @@ fileSystems = {
         pixman
         speex
         SDL_image
-        SDL_ttf
         SDL_mixer
         SDL2_ttf
         SDL2_mixer
@@ -236,9 +246,9 @@ fileSystems = {
   # $ nix search wget
   environment = {
   variables = {
-  EDITOR = "nvim";
-  SYSTEMD_EDITOR = "nvim";
-  VISUAL = "nvim";
+  EDITOR = "lvim";
+  SYSTEMD_EDITOR = "lvim";
+  VISUAL = "lvim";
   };
 sessionVariables = {
   #If your cursor become invisible
@@ -279,6 +289,7 @@ latest.firefox-nightly-bin
 libimobiledevice
 libnotify
 linux-wifi-hotspot
+lunarvim
 mcontrolcenter
 mpv
 nautilus
@@ -293,6 +304,9 @@ postgresql
 protonvpn-gui
 #ranger
 rquickshare
+#sbt
+#scala
+#scala_2_12
 slurp
 swaynotificationcenter
 swappy
