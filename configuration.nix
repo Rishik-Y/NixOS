@@ -29,6 +29,18 @@ in
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
 
+virtualisation.vmware.host.enable = true;
+
+  programs.virt-manager.enable = true;
+  users.groups.libvirtd.members = ["Kihsir"];
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "Kihsir" ];
+  virtualisation.virtualbox.host.enableKvm = true;
+  virtualisation.virtualbox.host.addNetworkInterface = false;
+  
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -79,18 +91,12 @@ in
     flatpak.enable = true;
   };
 
-fileSystems = {
-  "/home".options = [ "compress=zstd" "noatime" "autodefrag"];
-}; 
+  fileSystems = {
+    "/home".options = [ "compress=zstd" "noatime" "autodefrag"];
+  }; 
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.Kihsir = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-    packages = with pkgs; [
-    ];
-  };
-  users.users.kihsir = {
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
@@ -120,6 +126,12 @@ fileSystems = {
         fi
       '';
     };
+    # zsh = {
+    #   enable = true;
+    #   enableCompletion = true;
+    #   autosuggestions.enable = true;
+    #   syntaxHighlighting.enable = true;
+    # };
     fish.enable = true;
     nix-ld = {
     enable = true;
@@ -216,7 +228,7 @@ fileSystems = {
         libdrm
         mesa
         libxkbcommon  
-	];
+	    ];
     };
     adb.enable = true;
     neovim.enable = true;
@@ -270,6 +282,7 @@ clamav
 clamtk
 clipse
 #cliphist
+copilot-language-server
 dia
 emote
 fastfetch
@@ -279,7 +292,7 @@ git
 gitkraken
 go
 gparted
-grim
+#grim
 #home-manager
 hypridle
 ifuse
@@ -315,6 +328,7 @@ termius
 thefuck
 tlp
 waybar
+wayshot
 wluma
 wl-clipboard
 wofi
