@@ -1,18 +1,12 @@
 {
-  description = "A very basic flake";
-
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
-
-  outputs = { self, nixpkgs, flake-utils, ... }: flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: {
-    nixosConfigurations.NixOS = nixpkgs.lib.nixosSystem {
-      system = system;
-      modules = [
-        ./configuration.nix
-        # Make sure no unsupported options are used here
-      ];
+  outputs = { self, nixpkgs }: {
+    # replace 'joes-desktop' with your hostname here.
+    nixosConfigurations.joes-desktop = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [ ./configuration.nix ];
     };
-  });
+  };
 }
