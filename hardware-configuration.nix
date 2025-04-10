@@ -14,34 +14,34 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/ccc5ed70-df3d-4d57-a761-79ff7cefe4b5";
-      fsType = "ext4";
-    };
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/66D6-6E0D";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
-    };
-
-  fileSystems."/var" =
-    { device = "/dev/disk/by-uuid/163bb92b-18fe-4cf6-bf8a-14851961d5ef";
+    { device = "/dev/disk/by-uuid/e9428ce6-d1c1-44bb-9c13-c5cf416176ab";
       fsType = "ext4";
     };
 
   fileSystems."/tmp" =
-    { device = "/dev/disk/by-uuid/db19005a-a74a-42e1-8fc9-827f59ff1d8d";
+    { device = "/dev/disk/by-uuid/070c444e-bd1c-486d-b52f-b69886971871";
       fsType = "btrfs";
     };
 
+  fileSystems."/var" =
+    { device = "/dev/disk/by-uuid/386ba8fe-2397-4c3c-bc01-b2f3ae913465";
+      fsType = "ext4";
+    };
+
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/14bfd49a-4635-4733-bf25-33222273aa9b";
+    { device = "/dev/disk/by-uuid/4d109595-3394-44d5-9b9f-6fd0f46cd3e9";
       fsType = "btrfs";
     };
 
   fileSystems."/home" =
     { device = "/dev/disk/by-uuid/dca97892-e8be-4181-9e38-70f8d2e532ca";
       fsType = "btrfs";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/772C-59CA";
+      fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices = [ ];
@@ -52,7 +52,6 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp7s0f3u1.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp5s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

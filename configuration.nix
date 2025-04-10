@@ -4,15 +4,15 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-in
+# let
+#   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
+# in
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (import "${home-manager}/nixos")
+      # (import "${home-manager}/nixos")
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -29,17 +29,17 @@ in
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
 
-virtualisation.vmware.host.enable = true;
+  #virtualisation.vmware.host.enable = true;
 
-  programs.virt-manager.enable = true;
-  users.groups.libvirtd.members = ["Kihsir"];
-  virtualisation.libvirtd.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
+  # programs.virt-manager.enable = true;
+  # users.groups.libvirtd.members = ["Kihsir"];
+  # virtualisation.libvirtd.enable = true;
+  # virtualisation.spiceUSBRedirection.enable = true;
 
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "Kihsir" ];
-  virtualisation.virtualbox.host.enableKvm = true;
-  virtualisation.virtualbox.host.addNetworkInterface = false;
+  # virtualisation.virtualbox.host.enable = true;
+  # users.extraGroups.vboxusers.members = [ "Kihsir" ];
+  # virtualisation.virtualbox.host.enableKvm = true;
+  # virtualisation.virtualbox.host.addNetworkInterface = false;
   
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -70,6 +70,8 @@ virtualisation.vmware.host.enable = true;
   # hardware.pulseaudio.enable = true;
   # OR
   services = {
+    teamviewer.enable = true;
+    gnome.gnome-keyring.enable = true;
     pipewire = {
       enable = true;
       pulse.enable = true;
@@ -113,6 +115,10 @@ virtualisation.vmware.host.enable = true;
 
   #Enabling hyprland on NixOS
   programs = {
+    sway = {
+      enable = true;
+      wrapperFeatures.gtk = true;
+      };
     hyprland = {
       enable = true;
       xwayland.enable = true;
@@ -133,114 +139,119 @@ virtualisation.vmware.host.enable = true;
     #   syntaxHighlighting.enable = true;
     # };
     fish.enable = true;
-    nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-        stdenv.cc.cc
-        openssl
-        xorg.libXcomposite
-        xorg.libXtst
-        xorg.libXrandr
-        xorg.libXext
-        xorg.libX11
-        xorg.libXfixes
-        libGL
-        libva
-        pipewire
-        xorg.libxcb
-        xorg.libXdamage
-        xorg.libxshmfence
-        xorg.libXxf86vm
-        libelf
-        
-        # Required
-        glib
-        gtk2
-        bzip2
-        
-        # Without these it silently fails
-        xorg.libXinerama
-        xorg.libXcursor
-        xorg.libXrender
-        xorg.libXScrnSaver
-        xorg.libXi
-        xorg.libSM
-        xorg.libICE
-        gnome2.GConf
-        nspr
-        nss
-        cups
-        libcap
-        SDL2
-        libusb1
-        dbus-glib
-        ffmpeg
-        # Only libraries are needed from those two
-        libudev0-shim
-        
-        # Verified games requirements
-        xorg.libXt
-        xorg.libXmu
-        libogg
-        libvorbis
-        SDL
-        SDL2_image
-        glew110
-        libidn
-        tbb
-        
-        # Other things from runtime
-        flac
-        freeglut
-        libjpeg
-        libpng
-        libpng12
-        libsamplerate
-        libmikmod
-        libtheora
-        libtiff
-        pixman
-        speex
-        SDL_image
-        SDL_mixer
-        SDL2_ttf
-        SDL2_mixer
-        libappindicator-gtk2
-        libdbusmenu-gtk2
-        libindicator-gtk2
-        libcaca
-        libcanberra
-        libgcrypt
-        libvpx
-        librsvg
-        xorg.libXft
-        libvdpau
-        pango
-        cairo
-        atk
-        gdk-pixbuf
-        fontconfig
-        freetype
-        dbus
-        alsa-lib
-        expat
-        # Needed for electron
-        libdrm
-        mesa
-        libxkbcommon  
-	    ];
-    };
+#    nix-ld = {
+#    enable = true;
+#    libraries = with pkgs; [
+#        stdenv.cc.cc
+#        openssl
+#        xorg.libXcomposite
+#        xorg.libXtst
+#        xorg.libXrandr
+#        xorg.libXext
+#        xorg.libX11
+#        xorg.libXfixes
+#        libGL
+#        libva
+#        pipewire
+#        xorg.libxcb
+#        xorg.libXdamage
+#        xorg.libxshmfence
+#        xorg.libXxf86vm
+#        libelf
+#        
+#        # Required
+#        glib
+#        gtk2
+#        bzip2
+#        
+#        # Without these it silently fails
+#        xorg.libXinerama
+#        xorg.libXcursor
+#        xorg.libXrender
+#        xorg.libXScrnSaver
+#        xorg.libXi
+#        xorg.libSM
+#        xorg.libICE
+#        gnome2.GConf
+#        nspr
+#        nss
+#        cups
+#        libcap
+#        SDL2
+#        libusb1
+#        dbus-glib
+#        ffmpeg
+#        # Only libraries are needed from those two
+#        libudev0-shim
+#        
+#        # Verified games requirements
+#        xorg.libXt
+#        xorg.libXmu
+#        libogg
+#        libvorbis
+#        SDL
+#        SDL2_image
+#        glew110
+#        libidn
+#        tbb
+#        
+#        # Other things from runtime
+#        flac
+#        freeglut
+#        libjpeg
+#        libpng
+#        libpng12
+#        libsamplerate
+#        libmikmod
+#        libtheora
+#        libtiff
+#        pixman
+#        speex
+#        SDL_image
+#        SDL_mixer
+#        SDL2_ttf
+#        SDL2_mixer
+#        libappindicator-gtk2
+#        libdbusmenu-gtk2
+#        libindicator-gtk2
+#        libcaca
+#        libcanberra
+#        libgcrypt
+#        libvpx
+#        librsvg
+#        xorg.libXft
+#        libvdpau
+#        pango
+#        cairo
+#        atk
+#        gdk-pixbuf
+#        fontconfig
+#        freetype
+#        dbus
+#        alsa-lib
+#        expat
+#        # Needed for electron
+#        libdrm
+#        mesa
+#        libxkbcommon  
+#	    ];
+#    };
     adb.enable = true;
-    neovim.enable = true;
-    neovim.defaultEditor = true;
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+      # packages.myVimPackage = with pkgs.vimPlugins; {
+      #   start = [ nvchad ];
+      #   };
+      };
   };
 
   # programs.firefox.enable = true;
-  nixpkgs.overlays = [
-  (
-  import /home/Kihsir/Git_Clone/nixpkgs-mozilla/firefox-overlay.nix
-  )
-  ]; 
+  # nixpkgs.overlays = [
+  # (
+  # import /home/Kihsir/Git_Clone/nixpkgs-mozilla/firefox-overlay.nix
+  # )
+  # ]; 
 
   hardware = {
   #Opengl
@@ -275,6 +286,7 @@ sessionVariables = {
 
 android-tools
 ani-cli
+#anydesk
 blueman
 bottles
 brightnessctl
@@ -287,21 +299,19 @@ dia
 emote
 fastfetch
 flatpak
-ghostty
+#ghostty
 git
 gitkraken
-go
-gparted
-#grim
-#home-manager
+# home-manager
 hypridle
 ifuse
-#kdePackages.dolphin
+jay
 kitty
-latest.firefox-nightly-bin
+# latest.firefox-nightly-bin
 libimobiledevice
 libnotify
 linux-wifi-hotspot
+louvre
 lunarvim
 mcontrolcenter
 mpv
@@ -313,16 +323,13 @@ onedriver
 #pgadmin4
 pgadmin4-desktopmode
 playerctl
-postgresql
 protonvpn-gui
 #ranger
 rquickshare
-#sbt
-#scala
-#scala_2_12
 slurp
 swaynotificationcenter
 swappy
+teamviewer
 telegram-desktop
 termius
 thefuck
@@ -340,12 +347,12 @@ xfce.thunar
 
 nixpkgs.config.allowUnfree = true;
 
-  # Enable home-manager for the user
-  home-manager.users.Kihsir = {
-    home.stateVersion = "24.11"; # Set the version of home-manager configuration
-    # Additional home-manager config can be added here, e.g.:
-    # home.packages = [ pkgs.foo ];
-  };
+  # # Enable home-manager for the user
+  # home-manager.users.Kihsir = {
+  #   home.stateVersion = "24.11"; # Set the version of home-manager configuration
+  #   # Additional home-manager config can be added here, e.g.:
+  #   # home.packages = [ pkgs.foo ];
+  # };
 
   # List services that you want to enable:
 
