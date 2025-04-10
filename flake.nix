@@ -2,21 +2,17 @@
   description = "A very basic flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, ... }: {
-
+  outputs = { self, nixpkgs, flake-utils, ... }: flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: {
     nixosConfigurations.NixOS = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-    modules = [
-      ./configuration.nix
-    ];
+      system = system;
+      modules = [
+        ./configuration.nix
+        # Make sure no unsupported options are used here
+      ];
     };
-
-  };
+  });
 }
