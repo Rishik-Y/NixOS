@@ -1,11 +1,11 @@
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  };
-  outputs = { self, nixpkgs }: {
-    # replace 'joes-desktop' with your hostname here.
-    nixosConfigurations."NixOS" = nixpkgs.lib.nixosSystem {
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.home-manager.url = "github:nix-community/home-manager";
+
+  outputs = { self, nixpkgs, ... }@attrs: {
+    nixosConfigurations.fnord = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      specialArgs = attrs;
       modules = [ ./configuration.nix ];
     };
   };
