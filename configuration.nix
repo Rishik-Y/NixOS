@@ -17,6 +17,8 @@
     inputs.home-manager.nixosModules.home-manager
   ];
 
+  security.polkit.enable = true;
+
   # Enable home-manager for the user
   home-manager = {
   extraSpecialArgs = {inherit inputs;};
