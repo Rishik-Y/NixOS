@@ -2,18 +2,29 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, inputs, lib, pkgs, ... }:
-
-# let
-#   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-# in
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      # (import "${home-manager}/nixos")
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.home-manager
+    # (import "${home-manager}/nixos")
+  ];
+
+  # Enable home-manager for the user
+  home-manager = {
+  extraSpecialArgs = {inherit inputs;};
+  users = {
+  Kihsir = import ./home.nix;
+  };
+  };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -22,12 +33,25 @@
   networking.hostName = "NixOS"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  nix.optimise.automatic = true;
 
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
+
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-wlr
+    ];
+  };
 
   #virtualisation.vmware.host.enable = true;
 
@@ -40,7 +64,7 @@
   # users.extraGroups.vboxusers.members = [ "Kihsir" ];
   # virtualisation.virtualbox.host.enableKvm = true;
   # virtualisation.virtualbox.host.addNetworkInterface = false;
-  
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -55,9 +79,6 @@
 
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
-
-
-  
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -76,7 +97,7 @@
       enable = true;
       pulse.enable = true;
     };
-  # Enable the OpenSSH daemon.
+    # Enable the OpenSSH daemon.
     openssh = {
       enable = true;
       settings = {
@@ -87,20 +108,27 @@
     gvfs.enable = true;
     udisks2.enable = true;
     usbmuxd.enable = true;
-  # Enable touchpad support (enabled default in most desktopManager).
+    # Enable touchpad support (enabled default in most desktopManager).
     libinput.enable = true;
-  # Enable Flatpak
+    # Enable Flatpak
     flatpak.enable = true;
   };
 
   fileSystems = {
-    "/home".options = [ "compress=zstd" "noatime" "autodefrag"];
-  }; 
+    "/home".options = [
+      "compress=zstd"
+      "noatime"
+      "autodefrag"
+    ];
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.Kihsir = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [
+      "wheel"
+      "video"
+    ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
     ];
   };
@@ -115,10 +143,11 @@
 
   #Enabling hyprland on NixOS
   programs = {
+    light.enable = true;
     sway = {
       enable = true;
       wrapperFeatures.gtk = true;
-      };
+    };
     hyprland = {
       enable = true;
       xwayland.enable = true;
@@ -139,103 +168,103 @@
     #   syntaxHighlighting.enable = true;
     # };
     fish.enable = true;
-#    nix-ld = {
-#    enable = true;
-#    libraries = with pkgs; [
-#        stdenv.cc.cc
-#        openssl
-#        xorg.libXcomposite
-#        xorg.libXtst
-#        xorg.libXrandr
-#        xorg.libXext
-#        xorg.libX11
-#        xorg.libXfixes
-#        libGL
-#        libva
-#        pipewire
-#        xorg.libxcb
-#        xorg.libXdamage
-#        xorg.libxshmfence
-#        xorg.libXxf86vm
-#        libelf
-#        
-#        # Required
-#        glib
-#        gtk2
-#        bzip2
-#        
-#        # Without these it silently fails
-#        xorg.libXinerama
-#        xorg.libXcursor
-#        xorg.libXrender
-#        xorg.libXScrnSaver
-#        xorg.libXi
-#        xorg.libSM
-#        xorg.libICE
-#        gnome2.GConf
-#        nspr
-#        nss
-#        cups
-#        libcap
-#        SDL2
-#        libusb1
-#        dbus-glib
-#        ffmpeg
-#        # Only libraries are needed from those two
-#        libudev0-shim
-#        
-#        # Verified games requirements
-#        xorg.libXt
-#        xorg.libXmu
-#        libogg
-#        libvorbis
-#        SDL
-#        SDL2_image
-#        glew110
-#        libidn
-#        tbb
-#        
-#        # Other things from runtime
-#        flac
-#        freeglut
-#        libjpeg
-#        libpng
-#        libpng12
-#        libsamplerate
-#        libmikmod
-#        libtheora
-#        libtiff
-#        pixman
-#        speex
-#        SDL_image
-#        SDL_mixer
-#        SDL2_ttf
-#        SDL2_mixer
-#        libappindicator-gtk2
-#        libdbusmenu-gtk2
-#        libindicator-gtk2
-#        libcaca
-#        libcanberra
-#        libgcrypt
-#        libvpx
-#        librsvg
-#        xorg.libXft
-#        libvdpau
-#        pango
-#        cairo
-#        atk
-#        gdk-pixbuf
-#        fontconfig
-#        freetype
-#        dbus
-#        alsa-lib
-#        expat
-#        # Needed for electron
-#        libdrm
-#        mesa
-#        libxkbcommon  
-#	    ];
-#    };
+    #    nix-ld = {
+    #    enable = true;
+    #    libraries = with pkgs; [
+    #        stdenv.cc.cc
+    #        openssl
+    #        xorg.libXcomposite
+    #        xorg.libXtst
+    #        xorg.libXrandr
+    #        xorg.libXext
+    #        xorg.libX11
+    #        xorg.libXfixes
+    #        libGL
+    #        libva
+    #        pipewire
+    #        xorg.libxcb
+    #        xorg.libXdamage
+    #        xorg.libxshmfence
+    #        xorg.libXxf86vm
+    #        libelf
+    #
+    #        # Required
+    #        glib
+    #        gtk2
+    #        bzip2
+    #
+    #        # Without these it silently fails
+    #        xorg.libXinerama
+    #        xorg.libXcursor
+    #        xorg.libXrender
+    #        xorg.libXScrnSaver
+    #        xorg.libXi
+    #        xorg.libSM
+    #        xorg.libICE
+    #        gnome2.GConf
+    #        nspr
+    #        nss
+    #        cups
+    #        libcap
+    #        SDL2
+    #        libusb1
+    #        dbus-glib
+    #        ffmpeg
+    #        # Only libraries are needed from those two
+    #        libudev0-shim
+    #
+    #        # Verified games requirements
+    #        xorg.libXt
+    #        xorg.libXmu
+    #        libogg
+    #        libvorbis
+    #        SDL
+    #        SDL2_image
+    #        glew110
+    #        libidn
+    #        tbb
+    #
+    #        # Other things from runtime
+    #        flac
+    #        freeglut
+    #        libjpeg
+    #        libpng
+    #        libpng12
+    #        libsamplerate
+    #        libmikmod
+    #        libtheora
+    #        libtiff
+    #        pixman
+    #        speex
+    #        SDL_image
+    #        SDL_mixer
+    #        SDL2_ttf
+    #        SDL2_mixer
+    #        libappindicator-gtk2
+    #        libdbusmenu-gtk2
+    #        libindicator-gtk2
+    #        libcaca
+    #        libcanberra
+    #        libgcrypt
+    #        libvpx
+    #        librsvg
+    #        xorg.libXft
+    #        libvdpau
+    #        pango
+    #        cairo
+    #        atk
+    #        gdk-pixbuf
+    #        fontconfig
+    #        freetype
+    #        dbus
+    #        alsa-lib
+    #        expat
+    #        # Needed for electron
+    #        libdrm
+    #        mesa
+    #        libxkbcommon
+    #	    ];
+    #    };
     adb.enable = true;
     neovim = {
       enable = true;
@@ -243,7 +272,7 @@
       # packages.myVimPackage = with pkgs.vimPlugins; {
       #   start = [ nvchad ];
       #   };
-      };
+    };
   };
 
   # programs.firefox.enable = true;
@@ -251,108 +280,102 @@
   # (
   # import /home/Kihsir/Git_Clone/nixpkgs-mozilla/firefox-overlay.nix
   # )
-  # ]; 
+  # ];
 
   hardware = {
-  #Opengl
-  graphics.enable = true;
-  graphics.enable32Bit = true;
-  cpu.amd.updateMicrocode = true;
-  enableRedistributableFirmware = true;
-  bluetooth.enable = true;
-  bluetooth.powerOnBoot = true;
-  #Most wayland compositor need this
-  # nvidia.modesetting.enable = true;
+    #Opengl
+    graphics.enable = true;
+    graphics.enable32Bit = true;
+    cpu.amd.updateMicrocode = true;
+    enableRedistributableFirmware = true;
+    bluetooth.enable = true;
+    bluetooth.powerOnBoot = true;
+    #Most wayland compositor need this
+    # nvidia.modesetting.enable = true;
   };
- 
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-  variables = {
-  EDITOR = "lvim";
-  SYSTEMD_EDITOR = "lvim";
-  VISUAL = "lvim";
-  };
-sessionVariables = {
-  #If your cursor become invisible
-  # WLR_NO_HARDWARE_CURSORS = "1";
-  # Hint electron apps to use wayland
-  # NIXOS_OZONE_WL = "1";
-  };
+    variables = {
+      EDITOR = "lvim";
+      SYSTEMD_EDITOR = "lvim";
+      VISUAL = "lvim";
+    };
+    sessionVariables = {
+      #If your cursor become invisible
+      # WLR_NO_HARDWARE_CURSORS = "1";
+      # Hint electron apps to use wayland
+      # NIXOS_OZONE_WL = "1";
+    };
 
     systemPackages = with pkgs; [
-  #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #   wget
+      #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      #   wget
 
-android-tools
-ani-cli
-#anydesk
-blueman
-bottles
-brightnessctl
-clamav
-clamtk
-clipse
-#cliphist
-copilot-language-server
-dia
-emote
-fastfetch
-flatpak
-#ghostty
-git
-gitkraken
-home-manager
-hypridle
-ifuse
-jay
-kitty
-# latest.firefox-nightly-bin
-libimobiledevice
-libnotify
-linux-wifi-hotspot
-louvre
-lunarvim
-mcontrolcenter
-mpv
-nautilus
-ncdu
-networkmanagerapplet
-ntfs3g
-onedriver
-#pgadmin4
-pgadmin4-desktopmode
-playerctl
-protonvpn-gui
-#ranger
-rquickshare
-slurp
-swaynotificationcenter
-swappy
-teamviewer
-telegram-desktop
-termius
-thefuck
-tlp
-waybar
-wayshot
-wluma
-wl-clipboard
-wofi
-yazi
-xfce.thunar
-  ];
+      android-tools
+      ani-cli
+      #anydesk
+      autotiling
+      blueman
+      bottles
+      brightnessctl
+      clamav
+      clamtk
+      clipse
+      #cliphist
+      copilot-language-server
+      dia
+      emote
+      fastfetch
+      flatpak
+      #ghostty
+      git
+      gitkraken
+      home-manager
+      hypridle
+      ifuse
+      jay
+      kitty
+      # latest.firefox-nightly-bin
+      libimobiledevice
+      libnotify
+      linux-wifi-hotspot
+      louvre
+      lunarvim
+      mcontrolcenter
+      mpv
+      nautilus
+      ncdu
+      networkmanagerapplet
+      ntfs3g
+      onedriver
+      #pgadmin4
+      pgadmin4-desktopmode
+      playerctl
+      protonvpn-gui
+      #ranger
+      rquickshare
+      slurp
+      swaynotificationcenter
+      swappy
+      teamviewer
+      telegram-desktop
+      termius
+      thefuck
+      tlp
+      waybar
+      wayshot
+      wluma
+      wl-clipboard
+      wofi
+      yazi
+      xfce.thunar
+    ];
 
   };
 
-nixpkgs.config.allowUnfree = true;
-
-  # # Enable home-manager for the user
-  # home-manager.users.Kihsir = {
-  #   home.stateVersion = "24.11"; # Set the version of home-manager configuration
-  #   # Additional home-manager config can be added here, e.g.:
-  #   # home.packages = [ pkgs.foo ];
-  # };
+  nixpkgs.config.allowUnfree = true;
 
   # List services that you want to enable:
 
@@ -365,7 +388,7 @@ nixpkgs.config.allowUnfree = true;
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
-  system.copySystemConfiguration = true;
+  # system.copySystemConfiguration = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
@@ -387,4 +410,3 @@ nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.11"; # Did you read the comment?
 
 }
-
