@@ -22,7 +22,7 @@
   # Enable home-manager for the user
   home-manager = {
   extraSpecialArgs = {inherit inputs;};
-  backupFileExtension = "backup";  # 👈 Add this line
+  backupFileExtension = "backup3";  # 👈 Add this line
   users = {
   Kihsir = import ./home.nix;
   };
@@ -45,15 +45,6 @@
 
   time.timeZone = "Asia/Kolkata";
 
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk
-      xdg-desktop-portal-wlr
-    ];
-  };
-
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -70,7 +61,6 @@
   # services.printing.enable = true;
 
   services = {
-    teamviewer.enable = true;
     gnome.gnome-keyring.enable = true;
     pipewire = {
       enable = true;

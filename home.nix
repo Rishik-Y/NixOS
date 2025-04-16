@@ -10,7 +10,7 @@ wayland.windowManager.hyprland = {
   enable = true;
   xwayland.enable = true;
   extraConfig = ''
-  ${builtins.readFile ./hypr/hyprland.conf}
+  ${builtins.readFile ./hyprland.conf}
 '';};
 
 programs = {
@@ -23,10 +23,6 @@ programs = {
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
     '';
-    plugins = [
-      # Enable a plugin (here grc for colorized command output) from nixpkgs
-      { name = "grc"; src = pkgs.fishPlugins.grc.src; }
-      ];
       };
 };
 
