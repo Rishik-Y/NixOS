@@ -6,6 +6,30 @@
 
 nixpkgs.config.allowUnfree = true;
 
+wayland.windowManager.hyprland = {
+  enable = true;
+  xwayland.enable = true;
+  extraConfig = ''
+  ${builtins.readFile ./hypr/hyprland.conf}
+'';};
+
+programs = {
+  neovim = {
+    enable = true;
+    # defaultEditor = true;
+    };
+  fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set fish_greeting # Disable greeting
+    '';
+    plugins = [
+      # Enable a plugin (here grc for colorized command output) from nixpkgs
+      { name = "grc"; src = pkgs.fishPlugins.grc.src; }
+      ];
+      };
+};
+
   home.username = "Kihsir";
   home.homeDirectory = "/home/Kihsir";
 
