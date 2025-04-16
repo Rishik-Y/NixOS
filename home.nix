@@ -3,6 +3,9 @@
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
+
+nixpkgs.config.allowUnfree = true;
+
   home.username = "Kihsir";
   home.homeDirectory = "/home/Kihsir";
 
@@ -17,10 +20,64 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
+  home.packages = with pkgs; [
+    android-tools
+    ani-cli
+    autotiling
+    blueman
+    bottles
+    brightnessctl
+    clamav
+    clamtk
+    clipse
+    copilot-language-server
+    dia
+    emote
+    fastfetch
+    flatpak
+    git
+    gitkraken
+    home-manager
+    hypridle
+    #ifuse
+    #jay
+    kitty
+    # libimobiledevice
+    libnotify
+    linux-wifi-hotspot
+    # louvre
+    lunarvim
+    mcontrolcenter
+    mpv
+    nautilus
+    ncdu
+      networkmanagerapplet
+      ntfs3g
+      onedriver
+      pgadmin4-desktopmode
+      playerctl
+      protonvpn-gui
+      # rquickshare
+      slurp
+      swaynotificationcenter
+      swappy
+      # teamviewer
+      telegram-desktop
+      termius
+      thefuck
+      tlp
+      waybar
+      wayshot
+      wluma
+      wl-clipboard
+      wofi
+      yazi
+      xfce.thunar
+
+
+
+
+
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -68,7 +125,8 @@
   #  /etc/profiles/per-user/Kihsir/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    EDITOR = "nvim";
+    EDITOR = "lvim";
+    systemd_editor = "lvim";
     TERMINAL = "kitty";
   };
 

@@ -297,11 +297,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    variables = {
-      EDITOR = "lvim";
-      SYSTEMD_EDITOR = "lvim";
-      VISUAL = "lvim";
-    };
     sessionVariables = {
       #If your cursor become invisible
       # WLR_NO_HARDWARE_CURSORS = "1";
@@ -313,64 +308,6 @@
       #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       #   wget
 
-      android-tools
-      ani-cli
-      #anydesk
-      autotiling
-      blueman
-      bottles
-      brightnessctl
-      clamav
-      clamtk
-      clipse
-      #cliphist
-      copilot-language-server
-      dia
-      emote
-      fastfetch
-      flatpak
-      #ghostty
-      git
-      gitkraken
-      home-manager
-      hypridle
-      ifuse
-      jay
-      kitty
-      # latest.firefox-nightly-bin
-      libimobiledevice
-      libnotify
-      linux-wifi-hotspot
-      louvre
-      lunarvim
-      mcontrolcenter
-      mpv
-      nautilus
-      ncdu
-      networkmanagerapplet
-      ntfs3g
-      onedriver
-      #pgadmin4
-      pgadmin4-desktopmode
-      playerctl
-      protonvpn-gui
-      #ranger
-      rquickshare
-      slurp
-      swaynotificationcenter
-      swappy
-      teamviewer
-      telegram-desktop
-      termius
-      thefuck
-      tlp
-      waybar
-      wayshot
-      wluma
-      wl-clipboard
-      wofi
-      yazi
-      xfce.thunar
     ];
 
   };
