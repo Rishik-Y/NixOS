@@ -51,7 +51,6 @@ programs = {
     clamtk
     clipse
     copilot-language-server
-    dia
     emote
     fastfetch
     flatpak
