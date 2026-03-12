@@ -1,0 +1,426 @@
+// ╔══════════════════════════════════════════════════════════════╗
+// ║          NIRI CONFIG — Ported from Hyprland                 ║
+// ║  Sections 3 & 4 (Layout/Animations) kept at Niri defaults   ║
+// ╚══════════════════════════════════════════════════════════════╝
+// Format: KDL — https://kdl.dev
+// Wiki:   https://yalter.github.io/niri/Configuration:-Introduction
+
+// ──────────────────────────────────────────────────────────────
+// ENVIRONMENT
+// (XDG_CURRENT_DESKTOP/SESSION are set automatically by niri session)
+// ──────────────────────────────────────────────────────────────
+environment {
+    XCURSOR_SIZE "24"
+    DISPLAY ":0"
+    MOZ_ENABLE_WAYLAND "1"
+}
+
+// Fixes border/focus-ring drawing behind semitransparent windows
+prefer-no-csd
+
+// ──────────────────────────────────────────────────────────────
+// MONITOR  (from Hyprland: eDP-1, 1920x1080@144, scale 1)
+// ──────────────────────────────────────────────────────────────
+output "eDP-1" {
+    mode "1920x1080@144.000"
+    scale 1.0
+    transform "normal"
+}
+
+// ──────────────────────────────────────────────────────────────
+// INPUT
+// ──────────────────────────────────────────────────────────────
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        numlock
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+        // NOTE: scroll_factor=2 from Hyprland is NOT supported in niri
+        // NOTE: drag (tap-and-drag) is ON by default in niri — no need to set it
+    scroll-factor horizontal=2 vertical=1.5
+    click-method "button-areas"   // ← add this
+    left-handed              // ← add this
+    accel-speed 0.5     // from Hyprland: sensitivity = 0.3
+}
+
+    mouse {
+        left-handed         // from Hyprland: left_handed = true
+        accel-speed 0.3     // from Hyprland: sensitivity = 0.3
+    }
+
+    // from Hyprland: follow_mouse = 1
+    focus-follows-mouse max-scroll-amount="15%"
+}
+
+// ──────────────────────────────────────────────────────────────
+// LAYOUT  (from Hyprland: gaps_in=3 gaps_out=7, Catppuccin border, rounding=5)
+// ──────────────────────────────────────────────────────────────
+layout {
+    // gaps_in=3 → gap around each window (3+3=6px between two windows ✓)
+    gaps 3
+
+    center-focused-column "never"
+
+//    preset-column-widths {
+//        proportion 0.33333
+//        proportion 0.5
+//        proportion 0.66667
+//    }
+
+    default-column-width { proportion 0.5; }
+
+    // Hyprland shows borders on ALL windows (active + inactive)
+    // → use border (always visible), not focus-ring (only active window)
+    focus-ring {
+        off
+    }
+
+    border {
+        // from Hyprland: border_size=2, col.active_border=rgb(cdd6f4), col.inactive_border=rgba(595959aa)
+        width 2
+        active-color "#7fc8ff"
+        inactive-color "#505050"
+        urgent-color "#9b0000"
+    }
+
+    // Shadow: disabled (from Hyprland: shadow { enabled = false })
+    shadow {
+        // off by default — not enabling
+    }
+
+    // gaps_out=7, gaps already add 3px at edges → struts add 4px more = 7px total ✓
+    struts {
+        left 4
+        right 4
+        top 4
+        bottom 4
+    }
+}
+
+// ──────────────────────────────────────────────────────────────
+// AUTOSTART  (from Hyprland exec-once)
+// NOTE: mount commands need fstab or sudo rights to actually work
+// NOTE: hyprpaper will load but do nothing useful — swap with swww/swaybg later
+// NOTE: hypridle works fine on niri ✅
+// ──────────────────────────────────────────────────────────────
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
+spawn-at-startup "/usr/libexec/xdg-desktop-portal" "-r"
+spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
+spawn-at-startup "waybar"
+//spawn-at-startup "hyprpaper"
+spawn-at-startup "swaync"
+spawn-at-startup "clipse" "-listen"
+spawn-at-startup "blueman-applet"
+spawn-at-startup "nm-applet"
+spawn-at-startup "hypridle"
+spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
+spawn-at-startup "mount" "/dev/nvme0n1p5" "/media/Arch-home"
+spawn-at-startup "mount" "/dev/nvme0n1p1" "/media/Shared-partition"
+spawn-at-startup "gentoo-pipewire-launcher"
+spawn-at-startup "udiskie"
+spawn-sh-at-startup "~/.config/HyprV/hyprv_util setbg"
+
+// ──────────────────────────────────────────────────────────────
+// SCREENSHOTS
+// ──────────────────────────────────────────────────────────────
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// ──────────────────────────────────────────────────────────────
+// ANIMATIONS  (approximated from Hyprland bezier config)
+//
+// Hyprland curve → Niri equivalent:
+//   easeOutQuint (0.23,1,0.32,1)       → "ease-out-expo"  (fast start, smooth settle)
+//   almostLinear (0.5,0.5,0.75,1.0)    → spring stiffness=1000 (snappy, near-instant)
+//   linear       (0,0,1,1)             → "ease-out-cubic" (uniform, fast close)
+//   quick        (0.15,0,0.1,1)        → spring stiffness=1200 (very fast)
+//
+// Hyprland speed → approximate niri duration:
+//   windowsIn  4.1  → ~250ms  |  windowsOut 1.49 → ~150ms
+//   workspaces 1.94 → spring  |  layers      3.81 → ~250ms
+// ──────────────────────────────────────────────────────────────
+animations {
+    // Window open: easeOutQuint feel — smooth, slightly elastic
+    window-open {
+        duration-ms 250
+        curve "ease-out-expo"
+    }
+
+    // Window close: fast linear feel (windowsOut speed=1.49)
+    window-close {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+
+    // Window resize: same feel as open
+    window-resize {
+        duration-ms 250
+        curve "ease-out-expo"
+    }
+
+    // Horizontal scrolling (Niri-specific, no Hyprland equivalent)
+    horizontal-view-movement {
+        spring damping-ratio=0.86 stiffness=2000 epsilon=0.0001
+    }
+
+    // Workspace switch: almostLinear speed=1.94 → very snappy spring
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    // Window movement between columns
+    window-movement {
+        spring damping-ratio=1.0 stiffness=1200 epsilon=0.0001
+    }
+
+    // Config notification popup
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+    }
+
+    // Screenshot UI fade-in
+    screenshot-ui-open {
+        duration-ms 200
+        curve "ease-out-quad"
+    }
+
+    // Overview open/close zoom
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+// ──────────────────────────────────────────────────────────────
+// WINDOW RULES
+// ──────────────────────────────────────────────────────────────
+
+// WezTerm initial configure fix (niri default)
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    default-column-width {}
+}
+
+// Firefox Picture-in-Picture (niri default)
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+// kitty — float + opacity 0.8 (from Hyprland)
+window-rule {
+    match app-id="^kitty$"
+    open-floating true
+    opacity 0.8
+}
+
+// ghostty — opacity 0.8 (from Hyprland)
+window-rule {
+    match app-id=r#"ghostty"#
+    opacity 0.8
+}
+
+// thunar — opacity 0.8 (from Hyprland)
+window-rule {
+    match app-id="^thunar$"
+    opacity 0.8
+}
+
+// VSCodium — opacity 0.8 (from Hyprland)
+window-rule {
+    match app-id="^VSCodium$"
+    opacity 0.8
+}
+
+// wofi — float + opacity 0.8 (from Hyprland, active 0.8 / inactive 0.6 → averaged)
+window-rule {
+    match app-id="^wofi$"
+    open-floating true
+    opacity 0.8
+}
+
+// Rounded corners — from Hyprland: rounding=5
+window-rule {
+    geometry-corner-radius 5
+    clip-to-geometry true
+}
+
+// ──────────────────────────────────────────────────────────────
+// KEYBINDINGS
+// ──────────────────────────────────────────────────────────────
+// ⚠️  CONFLICT NOTE: Mod+L is used for swaylock (Hyprland preference).
+//     This means the Niri default Mod+L (focus-column-right) is REMOVED.
+//     Use Mod+Right arrow for right navigation instead.
+// ──────────────────────────────────────────────────────────────
+binds {
+    // ── Help overlay ──
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // ── App Launchers (from Hyprland) ──
+    Mod+Q     hotkey-overlay-title="Terminal: ghostty"      { spawn "nixGLMesa" "ghostty"; }
+    Mod+Space hotkey-overlay-title="App Launcher: wofi"     { spawn "wofi" "--show" "drun"; }
+    Mod+E     hotkey-overlay-title="File Manager: thunar"   { spawn "thunar"; }
+    Mod+L     hotkey-overlay-title="Lock Screen: swaylock"  { spawn "swaylock"; }
+
+    // Clipboard (clipse) — Alt+V from Hyprland
+    Alt+V { spawn "nixGLMesa" "ghostty" "--class" "clipse" "-e" "clipse"; }
+
+    // Emoji picker — Super+; from Hyprland
+    Mod+Semicolon { spawn "emote"; }
+
+    // ── Window Management (from Hyprland) ──
+    Mod+F4      repeat=false { close-window; }
+    Mod+V       repeat=false { toggle-window-floating; }
+    Mod+F       repeat=false { fullscreen-window; }
+    Mod+Shift+V              { switch-focus-between-floating-and-tiling; }
+
+    // ── Niri-specific layout controls ──
+    Mod+Shift+F { maximize-column; }
+    Mod+Ctrl+F  { expand-column-to-available-width; }
+    Mod+R       { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R  { reset-window-height; }
+    Mod+C       { center-column; }
+    Mod+Ctrl+C  { center-visible-columns; }
+    Mod+W       { toggle-column-tabbed-display; }
+    Mod+O       repeat=false { toggle-overview; }
+
+    // ── Focus navigation (arrows + HJK — L is taken by swaylock) ──
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    // Mod+H     { focus-column-left; }
+    // Mod+J     { focus-window-down; }
+    // Mod+K     { focus-window-up; }
+    // Mod+L → swaylock (see above), use Mod+Right for column-right
+
+    // ── Move windows ──
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+//    Mod+Ctrl+H     { move-column-left; }
+//    Mod+Ctrl+J     { move-window-down; }
+//    Mod+Ctrl+K     { move-window-up; }
+//    Mod+Ctrl+L     { move-column-right; }
+
+    // ── Monitor focus ──
+    Mod+Ctrl+Left  { focus-monitor-left; }
+    Mod+Ctrl+Down  { focus-monitor-down; }
+    Mod+Ctrl+Up    { focus-monitor-up; }
+    Mod+Ctrl+Right { focus-monitor-right; }
+//    Mod+Shift+H     { focus-monitor-left; }
+//    Mod+Shift+J     { focus-monitor-down; }
+//    Mod+Shift+K     { focus-monitor-up; }
+
+    // ── Move column to monitor ──
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+
+    // ── Workspaces: Hyprland-style ──
+    // Super+Shift+1..9 → switch/focus workspace
+    Mod+Shift+1 { focus-workspace 1; }
+    Mod+Shift+2 { focus-workspace 2; }
+    Mod+Shift+3 { focus-workspace 3; }
+    Mod+Shift+4 { focus-workspace 4; }
+    Mod+Shift+5 { focus-workspace 5; }
+    Mod+Shift+6 { focus-workspace 6; }
+    Mod+Shift+7 { focus-workspace 7; }
+    Mod+Shift+8 { focus-workspace 8; }
+    Mod+Shift+9 { focus-workspace 9; }
+
+    // Super+1..9 → move window to workspace
+    Mod+1 { move-column-to-workspace 1; }
+    Mod+2 { move-column-to-workspace 2; }
+    Mod+3 { move-column-to-workspace 3; }
+    Mod+4 { move-column-to-workspace 4; }
+    Mod+5 { move-column-to-workspace 5; }
+    Mod+6 { move-column-to-workspace 6; }
+    Mod+7 { move-column-to-workspace 7; }
+    Mod+8 { move-column-to-workspace 8; }
+    Mod+9 { move-column-to-workspace 9; }
+
+    // ── Workspace scroll (Page Up/Down + U/I) ──
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+    Mod+U              { focus-workspace-down; }
+    Mod+I              { focus-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U         { move-column-to-workspace-down; }
+    Mod+Ctrl+I         { move-column-to-workspace-up; }
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+
+    // ── Column edges ──
+    Mod+Home      { focus-column-first; }
+    Mod+End       { focus-column-last; }
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    // ── Column/Window resizing ──
+    Mod+Minus       { set-column-width "-10%"; }
+    Mod+Equal       { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    // ── Consume / Expel (Niri stacking) ──
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Comma        { consume-window-into-column; }
+    Mod+Period       { expel-window-from-column; }
+
+    // ── Mouse wheel navigation ──
+    Mod+WheelScrollDown       cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp         cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown  cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp    cooldown-ms=150 { move-column-to-workspace-up; }
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+    // ── Screenshots (Niri built-in) ──
+    Print      { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print  { screenshot-window; }
+
+    // ── Audio & Brightness (from Hyprland — 5% steps, 1% brightness) ──
+    XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0"; }
+    XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"; }
+    XF86AudioMute         allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute      allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "s" "1%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "s" "1%-"; }
+    XF86AudioPlay         allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop         allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev         allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext         allow-when-locked=true { spawn-sh "playerctl next"; }
+
+    // ── System ──
+//    Mod+Shift+E     { quit; }
+//    Mod+M           { quit; }  // from Hyprland: Super+M = exit
+    Ctrl+Alt+Delete { quit; }
+    Mod+Shift+P     { power-off-monitors; }
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+}
+
