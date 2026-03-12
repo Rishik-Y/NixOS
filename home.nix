@@ -1,152 +1,139 @@
-{ config, pkgs, ... }:
+{ config, pkgs, nixgl, nix-openclaw, zen-browser, ... }:
 
 {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
+  home.username = "kihsir";
+  home.homeDirectory = "/home/kihsir";
+  
+  # Note: Ensure "25.05" matches your actual nixpkgs version (e.g., 24.11 is current stable).
+  home.stateVersion = "25.11"; 
 
-nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = true;
 
-wayland.windowManager.hyprland = {
-  enable = true;
-  xwayland.enable = true;
-  extraConfig = ''
-  ${builtins.readFile ./hyprland.conf}
-'';};
+targets.genericLinux.enable = true;
 
-programs = {
-  neovim = {
-    enable = true;
-    # defaultEditor = true;
-    };
-  fish = {
-    enable = true;
-    interactiveShellInit = ''
-      set fish_greeting # Disable greeting
-    '';
-      };
-};
-
-  home.username = "Kihsir";
-  home.homeDirectory = "/home/Kihsir";
-
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
-  home.stateVersion = "24.05"; # Please read the comment before changing.
-
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
-  home.packages = with pkgs; [
-    android-tools
-    ani-cli
-    autotiling
-    blueman
-    bottles
-    brightnessctl
-    clamav
-    clamtk
-    clipse
-    copilot-language-server
-    emote
-    fastfetch
-    flatpak
-    git
-    gitkraken
-    home-manager
-    hypridle
-    #ifuse
-    #jay
-    kitty
-    # libimobiledevice
-    libnotify
-    linux-wifi-hotspot
-    # louvre
-    lunarvim
-    mcontrolcenter
-    mpv
-    nautilus
-    ncdu
-      networkmanagerapplet
-      ntfs3g
-      onedriver
-      pgadmin4-desktopmode
-      playerctl
-      protonvpn-gui
-      # rquickshare
-      slurp
-      swaynotificationcenter
-      swappy
-      # teamviewer
-      telegram-desktop
-      termius
-      thefuck
-      tlp
-      waybar
-      wayshot
-      wluma
-      wl-clipboard
-      wofi
-      yazi
-      xfce.thunar
-
-
-
-
-
-
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ];
-
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
+# New Syntax for nixGL
+  targets.genericLinux.nixGL = {
+    packages = nixgl.packages;
+    defaultWrapper = "mesa"; # or "nvidia"
+    installScripts = [ "mesa" ]; 
   };
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/Kihsir/etc/profile.d/hm-session-vars.sh
-  #
+imports = [
+    # Add this line:
+    nix-openclaw.homeManagerModules.openclaw
+    zen-browser.homeModules.beta
+];
+
+programs.zen-browser.enable = true;
+
+   # --- Window Manager ---
+   # wayland.windowManager.hyprland = {
+   #  enable = true;
+   #  xwayland.enable = true;
+   #  package = config.lib.nixGL.wrap pkgs.hyprland; 
+   #  extraConfig = builtins.readFile ./hyprland.conf;
+   #};
+
+  # --- Programs ---
+
+programs.openclaw = {
+  enable = true;    # ← this is what actually installs it
+#  documents = ./documents;
+
+  # Add this:
+#  bundledPlugins = {
+#    gogcli.enable = true;
+#  };
+
+#  config = {
+#    gateway = {
+#      mode = "local";
+#      auth.token = "3f918dabff4e8e592b5eeb287b34a098f68b127ee1b5932e875c211c5caf33cb";
+#    };
+#    channels.telegram = {
+#      tokenFile = "/home/kihsir/.secrets/telegram-bot-token";
+#      groups."*".requireMention = true;
+#    };
+#  };
+
+  instances.default = {
+    enable = true;
+    plugins = [];
+  };
+};
+
+  programs.neovim.enable = true;
+
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    history.size = 10000;
+    
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" "archlinux" "command-not-found" "gitfast" ];
+      theme = "robbyrussell";
+    };
+  };
+
+  # --- Packages ---
+  home.packages = with pkgs; [
+    # Active Packages
+    gemini-cli
+    gitkraken
+    #jetbrains.idea
+    mpv
+    ghostty
+    swappy
+    waybar
+    goose-cli
+    wl-clipboard
+    #msedit
+    wofi
+    thunar
+
+    # Commented / Inactive Packages
+     android-tools 
+#antigravity
+    # bottles
+     brightnessctl
+    # distrobox
+    # podman
+     fastfetch
+#linux-wifi-hotspot
+    #lunarvim
+     mcontrolcenter 
+     #mtpfs 
+    # onedriver
+    # pay-respects
+     playerctl
+    # protonvpn-gui
+    # rustup
+    # swaynotificationcenter
+     telegram-desktop
+    # termius
+    # wluma 
+    # yazi
+    # blueman
+    # clamav
+    # clamtk
+    # copilot-language-server
+     #emote
+    # hypridle
+    # libimobiledevice
+     libnotify
+    # ncdu
+    # networkmanagerapplet
+     ntfs3g
+    # rquickshare
+    # tlp 
+  ];
+
+  # --- Session Variables ---
   home.sessionVariables = {
-    EDITOR = "lvim";
-    systemd_editor = "lvim";
-    TERMINAL = "kitty";
+    TERMINAL = "ghostty";
   };
 
   # Let Home Manager install and manage itself.
